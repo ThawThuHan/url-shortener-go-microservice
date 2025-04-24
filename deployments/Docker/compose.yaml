@@ -1,0 +1,85 @@
+services:
+  frontend:
+    build: ../../frontend/.
+    ports:
+      - 80:80
+    environment:
+      - BACKEND_URL=http://localhost:8080
+    depends_on:
+      api-gateway:
+        condition: service_healthy
+
+  api-gateway:
+    build: ../../api-gateway/.
+    ports:
+      - 8080:8080
+    env_file:
+      - ../../api-gateway/.env
+    depends_on:
+      shortener-svc:
+        condition: service_healthy
+        restart: true
+      redirection-svc:
+        condition: service_healthy
+        restart: true
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "nc -nzv $${HOST} $${PORT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  shortener-svc:
+    build: ../../shortener-service/.
+    ports:
+      - 5881:5881
+    env_file:
+      - ../../shortener-service/.env
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "nc -zv localhost $${PORT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  redirection-svc:
+    build: ../../redirection-service/.
+    ports:
+      - 5882:5882
+    env_file:
+      - ../../redirection-service/.env
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_started
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "nc -zv localhost $${PORT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  redis:
+    image: redis

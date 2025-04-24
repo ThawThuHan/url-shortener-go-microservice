@@ -1,0 +1,5 @@
+.gitignore
+client.go
+.env
+.env.example
+Makefile

@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package shortener;
+
+option go_package = "github.com/thawthuhan/go-grpc-url-shortener/proto";
+
+service ShortenerService {
+    rpc CreateShortURL(CreateShortURLRequest) returns (CreateShortURLResponse) {}
+    rpc GetOriginURLs(GetOriginURLsRequest) returns (GetOriginURLsResponse) {}
+}
+
+message CreateShortURLRequest {
+    string origin_url = 1;
+    string session_id = 2;
+}
+
+message CreateShortURLResponse {
+    string short_code = 1;
+    string origin_url = 2;
+    string created_at = 3;
+}
+
+message GetOriginURLsRequest {
+    string session_id = 1;
+}
+
+message Urls {
+    int64 id = 1;
+    string session_id = 2;
+    string origin_url = 3;
+    string short_code = 4;
+    string created_at = 5;
+}
+
+message GetOriginURLsResponse {
+    repeated Urls urls = 1;
+}

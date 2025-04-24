@@ -11,6 +11,12 @@ export default function Home() {
         <URLShortenerForm />
         <URLShortenList />
       </div>
+      <footer className="w-full text-center py-4 mt-auto">
+        <p className="text-sm text-gray-500">
+          &copy; {new Date().getFullYear()} TRIOSYS Co.,ltd. All rights
+          reserved.
+        </p>
+      </footer>
     </div>
   );
 }

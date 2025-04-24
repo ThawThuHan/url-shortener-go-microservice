@@ -17,11 +17,12 @@ export const URLShortenerForm = () => {
     },
     onSuccess: (data) => {
       setIsShortening(false);
+      setUrl("");
       queryClient.invalidateQueries("urls");
     },
     onError: (err) => {
       setIsShortening(false);
-      console.log(err);
+      setError("Something wrong! Try again");
     },
   });
 

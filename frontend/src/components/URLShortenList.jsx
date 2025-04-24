@@ -12,8 +12,9 @@ export default function URLShortenList() {
     getUrls(sessionId)
   );
 
-  const result = data?.urls;
-  const origin = window.location.origin;
+  const result = data?.urls.sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
 
   if (isLoading) {
     return (

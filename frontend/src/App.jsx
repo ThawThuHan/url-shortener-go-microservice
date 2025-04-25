@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import Home from "./pages/Home";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { createContext, useContext, useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import Details from "./pages/Details";
 import Redirect from "./pages/Redirect";
 
@@ -34,7 +35,7 @@ function App() {
   });
   useEffect(() => {
     if (!sessionId) {
-      const newSessionId = crypto.randomUUID();
+      const newSessionId = uuidv4();
       localStorage.setItem("session_id", newSessionId);
       setSessionId(newSessionId);
     }
